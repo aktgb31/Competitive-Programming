@@ -75,8 +75,8 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "cmake.configureOnOpen": true,
     "editor.snippetSuggestions": "top",
+    "code-runner.terminalRoot": "/mnt/",
     "code-runner.executorMap": {
         "javascript": "node",
         "java": "cd $dir && javac $fileName && java $fileNameWithoutExt",
@@ -128,5 +128,11 @@
         "fortran-modern": "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "fortran_fixed-form": "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "fortran": "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt"
-    }
+    },
+    "code-runner.enableAppInsights": false,
+    "code-runner.saveFileBeforeRun": true,
+    "code-runner.showRunCommandInEditorContextMenu": false,
+    "code-runner.showRunCommandInExplorerContextMenu": false,
+    "code-runner.runInTerminal": true,
+
 }

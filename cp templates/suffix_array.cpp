@@ -61,7 +61,7 @@ public:
         p.resize(n);
         sortCyclicShifts();
     }
-    const int &operator[](int index)
+    const int &operator[](const int &index)
     {
         return p[index];
     }
