@@ -27,6 +27,7 @@
             "",
             "template <typename T>",
             "inline ostream &operator<<(ostream &os, vector<T> &A);",
+            "",
             "void solve()",
             "{",
             "  $0 ",
