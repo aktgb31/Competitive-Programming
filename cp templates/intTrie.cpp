@@ -15,11 +15,12 @@ class intTrie
         }
         int bit = 1 & (key >> d);
         root->child[bit] = remove(root->child[bit], key, d - 1);
-        if (root->child[0] == nullptr && root->child[1] == nullptr)
-        {
-            delete (root);
-            root = nullptr;
-        }
+        if (d != 31)
+            if (root->child[0] == nullptr && root->child[1] == nullptr)
+            {
+                delete (root);
+                root = nullptr;
+            }
         return root;
     }
 
