@@ -59,7 +59,7 @@ void updaterange(int node, int start, int end, int l, int r, int val)
     }
     if (start > end || start > r || end < l)
         return;
-    if (start >= l && end <= r)
+    if (l <= start && r >= end)
     {
         tree[node] += (end - start + 1) * val;
         if (start != end)
@@ -90,7 +90,7 @@ ll queryrange(int node, int start, int end, int l, int r)
         }
         lazy[node] = 0;
     }
-    if (start >= l && end <= r)
+    if (l <= start && r >= end)
         return tree[node];
     int mid = (start + end) / 2;
     ll p1 = queryrange(2 * node, start, mid, l, r, val);

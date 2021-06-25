@@ -1,12 +1,9 @@
-
-//Segment Tree using Classes
-
 class Node
 {
     Node segSegMerge(const Node &rhs) //Merges Two segment tree nodes
     {
         Node a = *this;
-        a.val = (a.val + rhs.val);
+        a.val = a.val + rhs.val;
         return a;
     }
     template <typename segNode>
