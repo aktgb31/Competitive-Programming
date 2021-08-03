@@ -35,6 +35,7 @@ class Segtree
     vector<segNode> Seg, Lazy;
     vector<bool> isLazy;
     int n;
+    int outOfRangeValue;
 
     void propagate(int node, int L, int R)
     {
@@ -69,23 +70,13 @@ class Segtree
     {
         propagate(node, start, end);
         if (qend < start || qstart > end || start > end)
-            return segNode();
+            return segNode(outOfRangeValue);
         if (qstart <= start && end <= qend)
             return Seg[node];
         int mid = (start + end) / 2;
         segNode l = rQuery(2 * node, start, mid, qstart, qend);
         segNode r = rQuery(2 * node + 1, mid + 1, end, qstart, qend);
         return l.segSegMerge(r);
-    }
-    segNode pQuery(int node, int start, int end, int pos) //Point Query
-    {
-        propagate(node, start, end);
-        if (start == end)
-            return Seg[node];
-        int mid = (start + end) / 2;
-        if (pos <= mid)
-            return pQuery(2 * node, start, mid, pos);
-        return pQuery(2 * node + 1, mid + 1, end, pos);
     }
     void rUpdate(int node, int start, int end, int qstart, int qend, segNode val)
     {
@@ -104,28 +95,13 @@ class Segtree
         rUpdate(2 * node + 1, mid + 1, end, qstart, qend, val);
         Seg[node] = Seg[2 * node].segSegMerge(Seg[2 * node + 1]);
     }
-    void pUpdate(int node, int start, int end, int pos, segNode val)
-    {
-        propagate(node, start, end);
-        if (start == end)
-        {
-            isLazy[node] = true;
-            Lazy[node] = val;
-            propagate(node, start, end);
-            return;
-        }
-        int mid = (start + end) / 2;
-        if (pos <= mid)
-            pUpdate(2 * node, start, mid, pos, val);
-        else
-            pUpdate(2 * node + 1, mid + 1, end, pos, val);
-        Seg[node] = Seg[2 * node].segSegMerge(Seg[2 * node + 1]);
-    }
 
 public:
     Segtree(int _n = 2e5)
     {
         this->n = _n;
+        outOfRangeValue = 0;
+        cerr << "Change Out of Range Value and also erase this statement";
         Seg.resize(4 * _n + 10);
         Lazy.resize(4 * _n + 10);
         isLazy.resize(4 * _n + 10);
@@ -142,7 +118,7 @@ public:
 
     segNode query(int pos)
     {
-        return pQuery(1, 0, n - 1, pos);
+        return rQuery(1, 0, n - 1, pos, pos);
     }
     segNode query(int left, int right)
     {
@@ -150,7 +126,7 @@ public:
     }
     void update(int pos, segNode val)
     {
-        pUpdate(1, 0, n - 1, pos, val);
+        rUpdate(1, 0, n - 1, pos, pos, val);
     }
     void update(int start, int end, segNode val)
     {

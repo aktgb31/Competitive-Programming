@@ -1,64 +1,114 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-//Class version
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+template <typename T = long long int>
 class matrix
 {
-private:
-    vector<vector<long long>> MAT;
+    vector<vector<T>> mat;
+    int r, c;
 
 public:
-    matrix(){};
-    matrix(const int &n, const int &m)
+    matrix()
     {
-        MAT.resize(n, vector<long long>(m));
+        this->r = 0;
+        this->c = 0;
     }
-    matrix(vector<vector<long long>> temp)
+    matrix(int r, int c)
     {
-        MAT = temp;
-    }
-    void unit()
-    {
-        for (int i = 0; i < MAT.size(); ++i)
-            MAT[i][i] = 1;
+        this->r = r;
+        this->c = c;
+        mat.assign(r, vector<T>(c));
     }
 
-    const vector<long long> &operator[](unsigned i) const
+    matrix(int r, int c, const T &val)
     {
-        return MAT[i];
+        this->r = r;
+        this->c = c;
+        mat.assign(r, vector<T>(c, val));
     }
-    vector<long long> &operator[](unsigned i)
+
+    matrix(int n)
     {
-        return MAT[i];
+        this->r = this->c = n;
+        mat.assign(n, vector<T>(n));
+        for (int i = 0; i < n; i++)
+            mat[i][i] = (T)1;
+    }
+
+    matrix(vector<vector<T>> lst) : mat(lst), r(lst.size()), c(lst[0].size())
+    {
+        for (int i = 0; i < r; i++)
+            assert(this->mat[i].size() == c);
+    }
+
+    T sum()
+    {
+        T res = 0;
+        for (const auto &rows : mat)
+            for (const auto &cells : rows)
+            {
+                res = (res + cells);
+#ifdef MOD
+                res %= MOD;
+#endif
+            }
+        return res;
     }
 
     matrix operator+(const matrix &B)
     {
-        int n = MAT.size(), m = MAT.size();
-        matrix X(n, m);
-        for (int i = 0; i < n; ++i)
-            for (int j = 0; j < m; ++j)
+        assert(this->r == B.r && this->c == B.c);
+        matrix<T> X(r, c);
+        for (int i = 0; i < r; ++i)
+            for (int j = 0; j < c; ++j)
             {
-                X[i][j] = (MAT[i][j] + B[i][j]);
+                X[i][j] = (mat[i][j] + B[i][j]);
+#ifdef MOD
+                X[i][j] %= MOD;
+#endif
             }
         return X;
     }
+
+    matrix operator-()
+    {
+        matrix<T> C(r, c, 0);
+        int i, j;
+        for (i = 0; i < r; i++)
+            for (j = 0; j < c; j++)
+            {
+                C[i][j] = -mat[i][j];
+#ifdef MOD
+                C[i][j] %= MOD;
+                if (C[i][j] < 0)
+                    C[i][j] += MOD;
+#endif
+            }
+
+        return C;
+    }
+
     matrix operator*(const matrix &B)
     {
-        int n = MAT.size(), m = MAT[0].size(), o = B[0].size();
-        matrix X(n, o);
-        for (int i = 0; i < n; ++i)
-            for (int j = 0; j < o; ++j)
-                for (int k = 0; k < m; ++k)
-                    X[i][j] = (X[i][j] + (MAT[i][k] * B[k][j]));
+        assert(this->c == B.r);
+        matrix<T> X(r, B.c, 0);
+
+        for (int j = 0; j < B.c; ++j)
+            for (int k = 0; k < c; ++k)
+            {
+                T temp = B[k][j];
+                for (int i = 0; i < r; ++i)
+                {
+                    X[i][j] = X[i][j] + (mat[i][k] * temp);
+#ifdef MOD
+                    X[i][j] %= MOD;
+#endif
+                }
+            }
 
         return X;
     }
     static matrix power(matrix A, long long y)
     {
-        matrix res(A[0].size(), A[0].size());
-        res.unit();
+        assert(A.r == A.c);
+        matrix<T> res(A.r);
         while (y > 0)
         {
             if (y & 1)
@@ -68,66 +118,32 @@ public:
         }
         return res;
     }
-};
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// namespace version
-namespace matrixOperations
-{
-    using T = long long;
-#define dim(n, m) (n, vector<T>(m))
-    typedef vector<vector<T>> matrix;
-
-    long long matrixSum(const matrix &A)
+    vector<T> &operator[](int i)
     {
-        long long res = 0;
-        for (const auto &rows : A)
-            for (const auto &cells : rows)
-                res = (res + cells);
-        return res;
+        return mat.at(i);
+    }
+    const vector<T> &operator[](int i) const
+    {
+        return mat.at(i);
     }
 
-    inline matrix operator+(const matrix &A, const matrix &B)
+    friend istream &operator>>(istream &in, matrix &M)
     {
-        int n = A.size(), m = A[0].size();
-        matrix X dim(n, m);
-        for (int i = 0; i < n; ++i)
-            for (int j = 0; j < m; ++j)
-            {
-                X[i][j] = (A[i][j] + B[i][j]);
-            }
-        return X;
-    }
-    void unit(matrix &MAT)
-    {
-        for (int i = 0; i < MAT.size(); ++i)
-            MAT[i][i] = 1;
-    }
+        for (int i = 0; i < M.r; i++)
+            for (int j = 0; j < M.c; j++)
+                in >> M[i][j];
 
-    inline matrix operator*(const matrix &A, const matrix &B)
-    {
-        int n = A.size(), m = A[0].size(), o = B[0].size();
-        matrix X dim(n, o);
-        for (int i = 0; i < n; ++i)
-            for (int j = 0; j < o; ++j)
-                for (int k = 0; k < m; ++k)
-                    X[i][j] = (X[i][j] + (A[i][k] * B[k][j]));
-
-        return X;
+        return in;
     }
-    inline matrix power(matrix A, long long y)
+    friend ostream &operator<<(ostream &out, const matrix &M)
     {
-        matrix res dim(A[0].size(), A[0].size());
-        unit(res);
-        while (y > 0)
+        for (int i = 0; i < M.r; i++)
         {
-            if (y & 1)
-                res = (res * A);
-            y = y >> 1;
-            A = A * A;
+            for (int j = 0; j < M.c; j++)
+                out << M[i][j] << " ";
+            out << "\n";
         }
-        return res;
+        return out;
     }
 };
-using namespace matrixOperations;
