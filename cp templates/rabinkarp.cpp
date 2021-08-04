@@ -3,7 +3,7 @@ class RabinKarpHash
 {
 private:
     static inline bool initialised = false;
-    static constexpr const int MAXN = 1e5 + 10;
+    static constexpr const int MAXN = 2e6 + 10;
     long long power(long long x, long long y, long long mod)
     {
         long long res = 1;
@@ -21,8 +21,8 @@ private:
 protected:
     static constexpr const int p[3] = {31, 29, 33};
     static constexpr const int m[3] = {1000000007, 1000000009, 998244353};
-    static inline int p_pow[HASH_LEVEL][MAXN];
-    static inline int inv_pow[HASH_LEVEL][MAXN];
+    static inline vector<int> p_pow[HASH_LEVEL];
+    static inline vector<int> inv_pow[HASH_LEVEL];
 
 public:
     static_assert(HASH_LEVEL <= 3 && HASH_LEVEL >= 1);
@@ -33,6 +33,8 @@ public:
             initialised = true;
             for (int j = 0; j < HASH_LEVEL; j++)
             {
+                p_pow[j].resize(MAXN);
+                inv_pow[j].resize(MAXN);
                 p_pow[j][0] = 1;
                 for (int i = 1; i < MAXN; i++)
                     p_pow[j][i] = (1ll * p_pow[j][i - 1] * p[j]) % m[j];
