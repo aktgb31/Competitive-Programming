@@ -3,7 +3,7 @@ class RabinKarpHash
 {
 private:
     static inline bool initialised = false;
-    static constexpr const int MAXN = 1e6 + 10;
+    static constexpr const int MAXN = 1e5 + 10;
     long long power(long long x, long long y, long long mod)
     {
         long long res = 1;
@@ -31,17 +31,15 @@ public:
         if (!initialised)
         {
             initialised = true;
-            p_pow[0][0] = p_pow[1][0] = p_pow[2][0] = 1;
             for (int j = 0; j < HASH_LEVEL; j++)
+            {
+                p_pow[j][0] = 1;
                 for (int i = 1; i < MAXN; i++)
                     p_pow[j][i] = (1ll * p_pow[j][i - 1] * p[j]) % m[j];
-
-            for (int j = 0; j < HASH_LEVEL; j++)
                 inv_pow[j][MAXN - 1] = power(p_pow[j][MAXN - 1], m[j] - 2, m[j]);
-
-            for (int j = 0; j < HASH_LEVEL; j++)
                 for (int i = MAXN - 2; i >= 0; i--)
                     inv_pow[j][i] = (1ll * inv_pow[j][i + 1] * p[j]) % m[j];
+            }
         }
     }
     array<int, HASH_LEVEL> getHash(const string &s, const int &start, const int &end)
@@ -85,11 +83,10 @@ public:
         {
             strHash[j].resize(len + 1);
             strHash[j][0] = 0;
-        }
 
-        for (int j = 0; j < HASH_LEVEL; j++)
             for (int i = 0; i < len; i++)
                 strHash[j][i + 1] = (strHash[j][i] + (1ll * (str[i] - 'a' + 1) * p_pow[j][i]) % m[j]) % m[j]; // i+1 of strHash mapped to i of pow and inv_pow
+        }
     }
     array<int, HASH_LEVEL> getHash(int l, int r)
     {
