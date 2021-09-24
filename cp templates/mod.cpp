@@ -2,6 +2,7 @@
 using namespace std;
 
 const long long mod = 1e9 + 7;
+
 class Mod
 {
     long long val;
@@ -52,26 +53,6 @@ public:
     void operator*=(Mod const &obj)
     {
         val = (val * obj.val) % mod;
-    }
-    Mod operator/(Mod const &obj)
-    {
-        if (__gcd(val, obj.val) != 1)
-        {
-            cerr << "Gcd!=1";
-            exit(1);
-        }
-        Mod temp;
-        temp.val = (val * power(obj.val, mod - 2)) % mod;
-        return temp;
-    }
-    void operator/=(Mod const &obj)
-    {
-        if (__gcd(val, obj.val) != 1)
-        {
-            cerr << "Gcd!=1";
-            exit(1);
-        }
-        val = (val * power(obj.val, mod - 2)) % mod;
     }
 };
 

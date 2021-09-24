@@ -1,4 +1,4 @@
-istream &operator>>(istream &is, __int128_t &num)
+istream &operator>>(istream &is, __int128 &num)
 {
     string s;
     is >> s;
@@ -14,7 +14,7 @@ istream &operator>>(istream &is, __int128_t &num)
     return is;
 }
 
-ostream &operator<<(ostream &os, __int128_t num)
+ostream &operator<<(ostream &os, __int128 num)
 {
     if (num < 0)
     {

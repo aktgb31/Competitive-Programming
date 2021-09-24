@@ -6,14 +6,18 @@ struct sparse_table
 {
     int n, logLim, def;
     vector<vector<int>> lookup;
-
-    void build(inpType arr[], int n, int def)
+    vector<int> Log2;
+    sparse_table(vector<inpType> arr, int def = 0)
     {
-        this->n = n;
+        this->n = arr.size();
         this->def = def;
-        logLim = log2(n) + 1;
-        lookup.resize(n, vector<int>(logLim, def));
 
+        Log2.resize(n + 1, 0);
+        for (int i = 2; i <= n; i++)
+            Log2[i] = Log2[i / 2] + 1;
+
+        logLim = Log2[n] + 1;
+        lookup.resize(n, vector<int>(logLim, def));
         for (int i = 0; i < n; i++)
         {
             lookup[i][0] = arr[i];
@@ -29,16 +33,7 @@ struct sparse_table
     {
         if (L < 0 || L > n - 1 || R < 0 || R > n - 1 || L > R)
             return def;
-        int j = (int)log2(R - L + 1);
+        int j = Log2[R - L + 1];
         return func(lookup[L][j], lookup[R - (1 << j) + 1][j]);
     }
 };
-
-int min(int a, int b)
-{
-    return std::min(a, b);
-}
-int max(int a, int b)
-{
-    return std::max(a, b);
-}

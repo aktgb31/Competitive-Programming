@@ -77,7 +77,7 @@ public:
         Seg.resize(4 * _n + 10);
     }
 
-    void build(vector<segNode> &Base)
+    Segtree build(vector<segNode> &Base)
     {
         n = Base.size();
         Seg.resize(4 * n + 10);
