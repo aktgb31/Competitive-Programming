@@ -102,10 +102,4 @@ public:
         }
         return h;
     }
-    void add(const string &str)
-    {
-        for (int j = 0; j < HASH_LEVEL; j++)
-            for (int i = 0; i < str.size(); i++, len++)
-                strHash[j][len + 1] = (strHash[j][len] + (1ll * (str[i] - 'a' + 1) * p_pow[j][len]) % m[j]) % m[j];
-    }
 };

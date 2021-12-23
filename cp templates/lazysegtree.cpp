@@ -1,10 +1,3 @@
-#include <bits/stdc++.h>
-#ifdef LOCAL
-#include "debug.h"
-#else
-#define db(...)
-#endif
-using namespace std;
 class Node
 {
 public:
@@ -29,14 +22,12 @@ public:
     template <typename T>
     explicit operator T() { return static_cast<T>(value); }
     template <typename Ostream>
-    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const Node &t);
+    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const Node &t)
+    {
+        os << t.value;
+        return os;
+    }
 };
-template <typename Ostream>
-typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const Node &t)
-{
-    os << t.value;
-    return os;
-}
 
 template <typename segNode>
 class segTree
@@ -64,7 +55,7 @@ class segTree
         }
     }
 
-    void build(int node, int start, int end, const vector<segNode> &Base) //Recursively Builds the tree
+    void build(int node, int start, int end, const vector<segNode> &Base) // Recursively Builds the tree
     {
         if (start == end)
         {
@@ -77,7 +68,7 @@ class segTree
         Seg[node] = segNode::mergeSegNodes(Seg[node + 1], Seg[node + 2 * (mid - start + 1)]);
     }
 
-    segNode rQuery(int node, int start, int end, int qstart, int qend) //Range Query
+    segNode rQuery(int node, int start, int end, int qstart, int qend) // Range Query
     {
         propagate(node, start, end);
         if (qend < start || qstart > end || start > end)
@@ -86,6 +77,8 @@ class segTree
             return Seg[node];
         int mid = (start + end) >> 1;
         segNode l, r;
+        propagate(node + 1, start, mid);
+        propagate(node + 2 * (mid - start + 1), mid + 1, end);
         if (qstart <= mid)
             l = rQuery(node + 1, start, mid, qstart, qend);
         if (qend >= mid + 1)
@@ -106,7 +99,8 @@ class segTree
             return;
         }
         int mid = (start + end) >> 1;
-
+        propagate(node + 1, start, mid);
+        propagate(node + 2 * (mid - start + 1), mid + 1, end);
         if (qstart <= mid)
             rUpdate(node + 1, start, mid, qstart, qend, val);
         if (qend >= mid + 1)
@@ -145,13 +139,10 @@ public:
         rUpdate(1, 0, size - 1, left, right, val);
     }
     template <typename Ostream, typename T>
-    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, segTree<T> &t);
+    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, segTree<T> &t)
+    {
+        for (int i = 0; i < t.size; i++)
+            os << t.get(i) << " ";
+        return os;
+    }
 };
-
-template <typename Ostream, typename T>
-typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, segTree<T> &t)
-{
-    for (int i = 0; i < t.size; i++)
-        os << t.get(i) << " ";
-    return os;
-}

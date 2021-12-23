@@ -1,39 +1,22 @@
-template <typename T = long long int>
+template <typename T>
 class matrix
 {
+    constexpr T DEFAULT() { return static_cast<T>(0); };
     vector<vector<T>> mat;
     int r, c;
 
 public:
-    matrix()
+    matrix() : r(0), c(0) {}
+    explicit matrix(int R, int C, T val = DEFAULT()) : r(R), c(C), mat(vector<vector<T>>(r, vector<T>(c, val))){};
+    explicit matrix(int n) : matrix(n, n, 0)
     {
-        this->r = 0;
-        this->c = 0;
-    }
-    matrix(int r, int c)
-    {
-        this->r = r;
-        this->c = c;
-        mat.assign(r, vector<T>(c));
-    }
-
-    matrix(int r, int c, const T &val)
-    {
-        this->r = r;
-        this->c = c;
-        mat.assign(r, vector<T>(c, val));
-    }
-
-    matrix(int n)
-    {
-        this->r = this->c = n;
-        mat.assign(n, vector<T>(n));
         for (int i = 0; i < n; i++)
             mat[i][i] = (T)1;
     }
 
-    matrix(vector<vector<T>> lst) : mat(lst), r(lst.size()), c(lst[0].size())
+    explicit matrix(vector<vector<T>> &&lst) : r(lst.size()), c(lst[0].size())
     {
+        mat = move(lst);
         for (int i = 0; i < r; i++)
             assert(this->mat[i].size() == c);
     }
@@ -43,12 +26,8 @@ public:
         T res = 0;
         for (const auto &rows : mat)
             for (const auto &cells : rows)
-            {
                 res = (res + cells);
-#ifdef MOD
-                res %= MOD;
-#endif
-            }
+
         return res;
     }
 
@@ -58,12 +37,7 @@ public:
         matrix<T> X(r, c);
         for (int i = 0; i < r; ++i)
             for (int j = 0; j < c; ++j)
-            {
                 X[i][j] = (mat[i][j] + B[i][j]);
-#ifdef MOD
-                X[i][j] %= MOD;
-#endif
-            }
         return X;
     }
 
@@ -73,15 +47,7 @@ public:
         int i, j;
         for (i = 0; i < r; i++)
             for (j = 0; j < c; j++)
-            {
                 C[i][j] = -mat[i][j];
-#ifdef MOD
-                C[i][j] %= MOD;
-                if (C[i][j] < 0)
-                    C[i][j] += MOD;
-#endif
-            }
-
         return C;
     }
 
@@ -89,20 +55,10 @@ public:
     {
         assert(this->c == B.r);
         matrix<T> X(r, B.c, 0);
-
         for (int j = 0; j < B.c; ++j)
             for (int k = 0; k < c; ++k)
-            {
-                T temp = B[k][j];
                 for (int i = 0; i < r; ++i)
-                {
-                    X[i][j] = X[i][j] + (mat[i][k] * temp);
-#ifdef MOD
-                    X[i][j] %= MOD;
-#endif
-                }
-            }
-
+                    X[i][j] = X[i][j] + (mat[i][k] * B[k][j]);
         return X;
     }
     static matrix power(matrix A, long long y)

@@ -15,21 +15,19 @@ public:
     template <typename T>
     explicit operator T() { return static_cast<T>(value); }
     template <typename Ostream>
-    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const Node &t);
+    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const Node &t)
+    {
+        os << t.value;
+        return os;
+    }
 };
-template <typename Ostream>
-typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const Node &t)
-{
-    os << t.value;
-    return os;
-}
 
 template <typename segNode>
 class segTree
 {
     int size;
     vector<segNode> Seg;
-    void build(int node, int start, int end, const vector<segNode> &Base) //Recursively Builds the tree
+    void build(int node, int start, int end, const vector<segNode> &Base) // Recursively Builds the tree
     {
         if (start == end)
         {
@@ -42,7 +40,7 @@ class segTree
         Seg[node] = segNode::mergeSegNodes(Seg[node + 1], Seg[node + 2 * (mid - start + 1)]);
     }
 
-    segNode rQuery(int node, int start, int end, int qstart, int qend) const //Range Query
+    segNode rQuery(int node, int start, int end, int qstart, int qend) const // Range Query
     {
         if (qend < start || qstart > end || start > end)
             return segNode();
@@ -101,13 +99,10 @@ public:
         pUpdate(1, 0, size - 1, pos, val, 0);
     }
     template <typename Ostream, typename T>
-    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const segTree<T> &t);
+    friend typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const segTree<T> &t)
+    {
+        for (int i = 0; i < t.size; i++)
+            os << t.get(i) << " ";
+        return os;
+    }
 };
-
-template <typename Ostream, typename T>
-typename enable_if<is_same<Ostream, ostream>::value, Ostream &>::type operator<<(Ostream &os, const segTree<T> &t)
-{
-    for (int i = 0; i < t.size; i++)
-        os << t.query(i) << " ";
-    return os;
-}
