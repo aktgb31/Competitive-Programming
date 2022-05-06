@@ -10,4 +10,3 @@
 *.js
 sources/
 node_modules/
-*.json

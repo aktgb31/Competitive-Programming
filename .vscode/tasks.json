@@ -1,0 +1,5 @@
+// Task.json file for C++ debugging
+// Language: jsonc
+// Path: .vscode/tasks.json
+// Compare this snippet from .vscode/launch.json:
+{}
