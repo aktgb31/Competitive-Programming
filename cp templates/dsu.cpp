@@ -1,8 +1,8 @@
 
 class UnionFind
-{ // OOP style
+{
 private:
-    vector<int> p, rank, setSize; // remember: vi is vector<int>
+    vector<int> p, setSize; // remember: vi is vector<int>
     int numSets;
 
 public:
@@ -10,35 +10,26 @@ public:
     {
         setSize.assign(N, 1);
         numSets = N;
-        rank.assign(N, 0);
         p.assign(N, 0);
         for (int i = 0; i < N; i++)
             p[i] = i;
     }
     int findSet(int i) { return (p[i] == i) ? i : (p[i] = findSet(p[i])); }
     bool isSameSet(int i, int j) { return findSet(i) == findSet(j); }
-    bool unionSet(int i, int j)
+    int unionSet(int i, int j)
     {
-        if (!isSameSet(i, j))
+        i = findSet(i);
+        j = findSet(j);
+        if (i != j)
         {
             numSets--;
-            int x = findSet(i), y = findSet(j);
-            // rank is used to keep the tree short
-            if (rank[x] > rank[y])
-            {
-                p[y] = x;
-                setSize[x] += setSize[y];
-            }
-            else
-            {
-                p[x] = y;
-                setSize[y] += setSize[x];
-                if (rank[x] == rank[y])
-                    rank[y]++;
-            }
-            return true;
+            if (setSize[i] > setSize[j])
+                swap(i, j);
+            p[i] = j;
+            setSize[j] += setSize[i];
+            return j;
         }
-        return false;
+        return -1;
     }
     int numDisjointSets() { return numSets; }
     int sizeOfSet(int i) { return setSize[findSet(i)]; }
